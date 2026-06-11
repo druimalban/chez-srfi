@@ -23,9 +23,9 @@
 #!r6rs
 (library (srfi :195 multiple-value-boxes)
   (export ;; SRFI 111 boxes
-   box box? unbox set-box!
-   ;; SRFI 195 multiple-value boxes
-   box-arity unbox-value set-box-value!)
+          box box? unbox set-box!
+          ;; SRFI 195 multiple-value boxes
+          box-arity unbox-value set-box-value!)
   (import (only (chezscheme) errorf assertion-violationf)
           (rename (rnrs base (6))
                   (list-ref ex:list-ref))
@@ -48,19 +48,19 @@
 
   (define-syntax (define-app-unbox stx)
     (syntax-case stx ()
-      [(k bind-to (op . extra-args) catch* ...)
-       (let ([catch-these (syntax->datum #'(unbox op catch* ...))])
-         #`(define (bind-to bx . extra-args)
-             (guard (ex [(and (who-condition? ex)
-                              (memq (condition-who ex)
-                                    `(,unbox ,(quote op) ,(quote catch*) ...)
-                                    #;#,'catch-these))
-                         (assertion-violationf (quote bind-to)
-                                               "~a is not a multiple value box"
-                                               bx)]
-                        [else
-                         (raise-continuable ex)])
-                (op (ex:unbox bx) . extra-args))))]))
+      ((k bind-to (op . extra-args) catch* ...)
+       #'(define (bind-to bx . extra-args)
+           (guard
+            (ex
+             ((and (who-condition? ex)
+                   (memq (condition-who ex)
+                         `(,unbox ,(quote op) ,(quote catch*) ...)))
+              (assertion-violationf (quote bind-to)
+                                    "~a is not a multiple value box"
+                                    bx))
+             (else
+              (raise-continuable ex)))
+            (op (ex:unbox bx) . extra-args))))))
 
   (define (set-box! b . v*)
     (ex:set-box! b v*))
@@ -78,19 +78,20 @@
               (loop (fx+ k 1) (cdr kdr))))))
 
   (define (list-ref lst i)
-    (guard (ex [(and (who-condition? ex)
-                     (eq? (condition-who ex) 'list-ref))
-                (errorf 'unbox-value
-                        "~a is not a valid index for box values ~a"
-                        i lst)]
-               [else
-                (raise-continuable ex)])
+    (guard
+     (ex ((and (who-condition? ex)
+               (eq? (condition-who ex) (quote list-ref)))
+          (errorf 'unbox-value
+                  "~a is not a valid index for box values ~a"
+                  i lst))
+         (else
+          (raise-continuable ex)))
       (ex:list-ref lst i)))
 
   (define-app-unbox unbox          (values-of) values)
   (define-app-unbox box-arity      (length))
-  (define-app-unbox unbox-value    (list-ref k))     ; -> list-ref (unbox b) k
-  (define-app-unbox set-box-value! (list-set! k obj)); -> list-set! (unbox b) k obj
+  (define-app-unbox unbox-value    (list-ref k))     ;; -> list-ref  (unbox b) k
+  (define-app-unbox set-box-value! (list-set! k obj));; -> list-set! (unbox b) k obj
 
   ;;;
   ); library
