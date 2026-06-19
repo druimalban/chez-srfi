@@ -3,10 +3,13 @@
 ;;; SPDX-License-Identifier: MIT
 #!r6rs
 
-(import (only (chezscheme) include)
-        (rnrs (6))
-        (only (srfi :1 lists) list= take drop count take-while drop-while list-index)
-        (rename (srfi :1 lists) (remove remove/?))
+(import (only (chezscheme) include format random)
+        (rename (rnrs (6))
+                (exact? r6rs:exact?)
+                (inexact? r6rs:inexact?))
+        (only (rename (srfi :1 lists)
+                      (remove remove/?))
+              list= take drop count take-while drop-while list-index split-at remove/?)
         (srfi :64 testing)
         (only (srfi :152 strings) string-segment)
         (only (srfi :158 generators-and-accumulators) circular-generator gfilter gmap)
@@ -30,7 +33,7 @@
         (srfi :160 meta utils)
         (srfi :160 test aux))
 
-(include "tests/srfi-160-base-properties.scm")
+(include "srfi-160-base-properties.scm")
 ;;
 (define-syntax run-all-base-tests
   (syntax-rules (exact)
@@ -115,7 +118,7 @@
             between this sort of issue and errors raised by the test. |#
          (test-property (~l"~a->list (vector and start arguments)") to-list-property (list (mk-gen-rvec 24) (gen-range 0 12)))
          (test-property (~l"~a->list (vector, start and end arguments)") to-list-property (list (mk-gen-rvec 24) (gen-range 0 12) (gen-range 12 24))))
-       (test-property (~l"~a->list (non-~a argument)") to-list/non-vec-property (list (symbol-generator)))
+       (test-property (~l"~a->list (non-vector argument)") to-list/non-vec-property (list (symbol-generator)))
        (test-property (~l"~a->list (negative start)") to-list/neg-start-property (list (mk-gen-rvec 24) (gen-range -2048 0)))
        (test-property (~l"~a->list (negative end)") to-list/neg-end-property (list (mk-gen-rvec 24) (gen-range 0 24) (gen-range -2048 0)))
        (test-property (~l"~a->list (flipped start/end)") to-list/bounds-property (list (mk-gen-rvec 48) (gen-range 24 48) (gen-range 0 24)))
@@ -135,7 +138,7 @@
        (test-property (~l"~a-ref (negative index)") sub/neg-index-property (list (mk-gen-rvec 24) (gen-range -2048 0)))
        (test-end)
 
-       (test-begin (~l"~a update!"))
+       (test-begin (~l"~a in-place update"))
        (define-upd!-property upd!-property *upd!*)
        (define-upd!/non-elem-property upd!/non-elem-property *upd!* *type-of* "" "-set!")
        (define-upd!/non-elem-range-property upd!/non-elem-range-property *upd!* *type-of* "" "-set!")
@@ -144,7 +147,7 @@
        (define-sub+upd!/bounds-property upd!/bounds-property *upd!* *length* *type-of* "" "-set!")
        (define-sub+upd!/neg-index-property upd!/neg-index-property *upd!* *type-of* "" "-set!")
        (test-property (~l"~a-set!") upd!-property (list (mk-gen-rvec 24) (gen-range 0 24) (*mk-gen-relem*)))
-       (test-property (~l"~a-set! (non ~a argument)") upd!/non-vec-property (list (mk-gen-rlist 24) (gen-range 0 24) (*mk-gen-relem*)))
+       (test-property (~l"~a-set! (non-vector argument)") upd!/non-vec-property (list (mk-gen-rlist 24) (gen-range 0 24) (*mk-gen-relem*)))
        (test-property (~l"~a-set! (non-numeric index)") upd!/non-index-property (list (mk-gen-rvec 1) (symbol-generator) (*mk-gen-relem*)))
        (test-property (~l"~a-set! (index overflows)") upd!/bounds-property (list (mk-gen-rvec 1) (gen-range 0 24) (*mk-gen-relem*)))
        (test-property (~l"~a-set! (negative index)") upd!/neg-index-property (list (mk-gen-rvec 24) (gen-range -2048 0) (*mk-gen-relem*)))

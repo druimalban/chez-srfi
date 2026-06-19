@@ -89,7 +89,8 @@
                 compare-lengths all-same-length? total-length
 	        vectorised-subscript
                 compose
-                magnitude>? magnitude<?))
+                magnitude>? magnitude<?)
+          (srfi private include))
   #|
      SRFI 160 is quite extensive, so I split the procedures up into specific
      sections, where possible.
