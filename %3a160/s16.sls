@@ -5,7 +5,7 @@
 	  s16vector make-s16vector list->s16vector s16vector->list
 	  s16vector-length s16vector-ref s16vector-set!
           ;; predicates
-          s16vector-empty? s16vector= s16vector<
+          s16vector-empty? s16vector=
 
           ;; constructors
 	  s16vector-unfold s16vector-unfold-right

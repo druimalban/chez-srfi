@@ -71,7 +71,7 @@
           (only (rnrs r5rs (6)) exact->inexact inexact->exact)
           (only (srfi :160 meta utils)
                 format-vector-type
-                nonnegative-integer? exact-integer? inexact?)
+                nonnegative-fixnum? exact-integer? inexact?)
           (only (srfi :160 meta curried) raised-with?))
 
   (define (u8? n)  (and (exact-integer? n) (<= 0 n 255)))
@@ -144,7 +144,7 @@
                                                               (format-vector-type "~~a is not a valid length for ~a" lexical-form) size)]
                                        [(raised-with? ex 'make-bytevector)
                                         (assertion-violationf (quote maker)
-                                                              "length ~a is not a non-negative integer" size)]
+                                                              "length ~a is not a non-negative fixnum" size)]
                                        [else
                                         (raise-continuable ex)])
                               (new
@@ -157,7 +157,7 @@
                                               (format-vector-type "~~a is not a valid length for ~a" lexical-form) size)]
                                            [(raised-with? ex 'make-bytevector)
                                             (assertion-violationf (quote maker)
-                                              "length ~a is not a non-negative integer" size)]
+                                              "length ~a is not a non-negative fixnum" size)]
                                            [else
                                             (raise-continuable ex)])
                                    (let ([bv-size (fx* size bytes)])
@@ -179,7 +179,7 @@
                      (define ref
                        (lambda (v i)
                          (guard (ex [(raised-with? ex (quote fx*))
-                                     (assertion-violationf (quote ref) "index ~a is not a non-negative integer" i)]
+                                     (assertion-violationf (quote ref) "index ~a is not a non-negative fixnum" i)]
                                     [(raised-with? ex (quote bv-accessor))
                                      (assertion-violationf (quote ref) (format "~~a is not of type ~a" lexical-form) v)]
                                     [(raised-with? ex (quote bytevector-ref))
@@ -192,7 +192,7 @@
                          (if (exact-integer? value)
                              (if (<= min value max)
                                  (guard (ex [(raised-with? ex (quote fx*))
-                                             (assertion-violationf (quote set) "index ~a is not a non-negative integer" i)]
+                                             (assertion-violationf (quote set) "index ~a is not a non-negative fixnum" i)]
                                             [(raised-with? ex (quote bv-accessor))
                                              (assertion-violationf (quote set) (format "~~a is not of type ~a" lexical-form) v)]
                                             [(raised-with? ex (quote bytevector-set!))
@@ -227,12 +227,12 @@
                                      (raise-continuable ex)])
                            (->list v start (len v)))]
                         [(v start end)
-                         (cond [(not (nonnegative-integer? start))
+                         (cond [(not (nonnegative-fixnum? start))
                                 (assertion-violationf (quote ->list)
-                                  "start ~a is not a non-negative integer" start)]
-                               [(not (nonnegative-integer? end))
+                                  "start ~a is not a non-negative fixnum" start)]
+                               [(not (nonnegative-fixnum? end))
                                 (assertion-violationf (quote ->list)
-                                  "end ~a is not a non-negative integer" end)]
+                                  "end ~a is not a non-negative fixnum" end)]
                                [(> start end)
                                 (assertion-violationf (quote ->list)
                                   "end ~a must be greater than or equal to start ~a" end start)]
@@ -331,7 +331,7 @@
                                          (format-vector-type "~~a is not a valid length for ~a" lexical-form) size)]
                                       [(raised-with? ex 'make-bytevector)
                                        (assertion-violationf (quote maker)
-                                         "length ~a is not a non-negative integer" size)]
+                                         "length ~a is not a non-negative fixnum" size)]
                                       [else
                                        (raise-continuable ex)])
                              (new
@@ -343,7 +343,7 @@
                                               (format-vector-type "~~a is not a valid length for ~a" lexical-form) size)]
                                            [(raised-with? ex 'make-bytevector)
                                             (assertion-violationf (quote maker)
-                                              "length ~a is not a non-negative integer" size)]
+                                              "length ~a is not a non-negative fixnum" size)]
                                            [else
                                             (raise-continuable ex)])
                                    (let ([bv-size (fx* size bytes)])
@@ -364,7 +364,7 @@
                    (define ref
                      (lambda (v i)
                        (guard (ex [(raised-with? ex (quote fx*))
-                                   (assertion-violationf (quote ref) "index ~a is not a non-negative integer" i)]
+                                   (assertion-violationf (quote ref) "index ~a is not a non-negative fixnum" i)]
                                   [(raised-with? ex (quote bv-accessor))
                                    (assertion-violationf (quote ref) (format "~~a is not of type ~a" lexical-form) v)]
                                   [(raised-with? ex (quote bytevector-ref))
@@ -376,7 +376,7 @@
                      (lambda (v i value)
                        (if (flonum? value)
                            (guard (ex [(raised-with? ex (quote fx*))
-                                       (assertion-violationf (quote set) "index ~a is not a non-negative integer" i)]
+                                       (assertion-violationf (quote set) "index ~a is not a non-negative fixnum" i)]
                                       [(raised-with? ex (quote bv-accessor))
                                        (assertion-violationf (quote set) (format "~~a is not of type ~a" lexical-form) v)]
                                       [(raised-with? ex (quote bytevector-set!))
@@ -408,12 +408,12 @@
                                      (raise-continuable ex)])
                          (->list v start (len v)))]
                       [(v start end)
-                       (cond [(not (nonnegative-integer? start))
+                       (cond [(not (nonnegative-fixnum? start))
                               (assertion-violationf (quote ->list)
-                                "start ~a is not a non-negative integer" start)]
-                             [(not (nonnegative-integer? end))
+                                "start ~a is not a non-negative fixnum" start)]
+                             [(not (nonnegative-fixnum? end))
                               (assertion-violationf (quote ->list)
-                                "end ~a is not a non-negative integer" end)]
+                                "end ~a is not a non-negative fixnum" end)]
                              [(> start end)
                               (assertion-violationf (quote ->list)
                                 "end ~a must be greater than or equal to start ~a" end start)]
@@ -494,11 +494,11 @@
                       (lambda (new)
                         (case-lambda
                          [(size)
-                          (cond [(nonnegative-integer? size)
+                          (cond [(nonnegative-fixnum? size)
                                  (new (make-internal-repr (fx* 2 size)))]
-                                [(integer? size)
+                                [(fixnum? size)
                                  (assertion-violationf (quote maker)
-                                  "length ~a is not a non-negative integer" size)]
+                                  "length ~a is not a non-negative fixnum" size)]
                                 [else
                                  (assertion-violationf (quote maker)
                                   (format-vector-type "~~a is not a valid length for ~a" lexical-form) size)])]
@@ -507,17 +507,17 @@
                                  (assertion-violationf (quote maker)
                                    (format-vector-type "repeating element ~~a cannot be contained within ~a" lexical-form)
                                    value)]
-                                 [(nonnegative-integer? size)
+                                 [(nonnegative-fixnum? size)
                                   (let ([slots (maker size)])
                                    (let loop ([k 0])
-                                     (if (= k size)
+                                     (if (fx=? k size)
                                          slots
                                          (begin
                                            (set slots k value)
-                                           (loop (+ k 1))))))]
-                                [(integer? size)
+                                           (loop (fx+ k 1))))))]
+                                [(fixnum? size)
                                  (assertion-violationf (quote maker)
-                                   "length ~a is not a non-negative integer" size)]
+                                   "length ~a is not a non-negative fixnum" size)]
                                 [else
                                  (assertion-violationf (quote maker)
                                   (format-vector-type "~~a is not a valid length for ~a" lexical-form) size)])]))))
@@ -542,17 +542,17 @@
                                          i v)]
                                   [(raised-with? ex (quote fx*))
                                    (assertion-violationf (quote set)
-                                     "index ~a is not a non-negative integer" i)]
+                                     "index ~a is not a non-negative fixnum" i)]
                                   [else
                                    (raise-continuable ex)])
                           (let ([raw (internal-repr v)]
                                 [j (fx* i 2)])
                             (cond [(and (inexact? value) (inexact? (imag-part value)))
                                    (internal-repr-set! raw j       (real-part value))
-                                   (internal-repr-set! raw (+ j 1) (imag-part value))]
+                                   (internal-repr-set! raw (fx+ j 1) (imag-part value))]
                                   [(inexact? value)
                                    (internal-repr-set! raw j       (real-part value))
-                                   (internal-repr-set! raw (+ j 1) (exact->inexact (imag-part value)))]
+                                   (internal-repr-set! raw (fx+ j 1) (exact->inexact (imag-part value)))]
                                   [else
                                    (assertion-violationf (quote set)
                                      (format-vector-type "element ~~a cannot be contained within ~a" lexical-form)
@@ -571,13 +571,13 @@
                                      i v)]
                                   [(raised-with? ex (quote fx*))
                                    (assertion-violationf (quote ref)
-                                     "index ~a is not a non-negative integer" i)]
+                                     "index ~a is not a non-negative fixnum" i)]
                                   [else
                                    (raise-continuable ex)])
                          (let ([raw (internal-repr v)]
                                [j (fx* i 2)])
                            (make-rectangular (internal-repr-ref raw j)
-                                             (internal-repr-ref raw (+ j 1)))))))
+                                             (internal-repr-ref raw (fx+ j 1)))))))
                    (define ->list
                      (case-lambda
                       [(v)
@@ -604,16 +604,16 @@
                                      (format "~~a is not of type ~a" lexical-form) v)]
                                   [else
                                    (raise-continuable ex)])
-                         (cond [(not (nonnegative-integer? start))
+                         (cond [(not (nonnegative-fixnum? start))
                                 (assertion-violationf (quote ->list)
-                                  "start ~a is not a non-negative integer" start)]
-                               [(not (nonnegative-integer? end))
+                                  "start ~a is not a non-negative fixnum" start)]
+                               [(not (nonnegative-fixnum? end))
                                 (assertion-violationf (quote ->list)
-                                  "end ~a is not a non-negative integer" end)]
-                               [(> start end)
+                                  "end ~a is not a non-negative fixnum" end)]
+                               [(fx>? start end)
                                 (assertion-violationf (quote ->list)
                                   "end ~a must be greater than or equal to start ~a" end start)]
-                               [(> end (len v))
+                               [(fx>? end (len v))
                                 (assertion-violationf (quote ->list)
                                   "end ~a overflows ~a" end v)]
                              [else

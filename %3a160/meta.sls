@@ -1,4 +1,4 @@
-;; SPDX-FileCopyrightText: 2018 D. Guthrie <dguthrie@posteo.net>
+;; SPDX-FileCopyrightText: 2026 D. Guthrie <dguthrie@posteo.net>
 ;;;
 ;;; SPDX-License-Identifier: MIT
 #!r6rs
@@ -9,7 +9,7 @@
           ;; predicates
           define-numeric-vector-empty?
 	  define-numeric-vector=?
-          define-numeric-vector<?
+          #;define-numeric-vector<?
 
           ;; constructors
 	  define-numeric-vector-unfold
@@ -67,9 +67,7 @@
 	  define-numeric-vector-hash
 
 	  ;; generators
-	  define-numeric-vector-make-generator
-	  define-make-random-numeric-list-generator
-	  define-make-random-numeric-vector-generator)
+	  define-numeric-vector-make-generator)
   ;;
   (import (only (chezscheme) include assertion-violationf inexact->exact)
 	  (rnrs base (6))
@@ -85,12 +83,11 @@
           (srfi :160 meta curried)
           (only (srfi :160 meta utils)
                 format-vector-type
-                nonnegative-integer?
+                nonnegative-fixnum?
                 compare-lengths all-same-length? total-length
 	        vectorised-subscript
                 compose
-                magnitude>? magnitude<?)
-          (srfi private include))
+                magnitude>? magnitude<?))
   #|
      SRFI 160 is quite extensive, so I split the procedures up into specific
      sections, where possible.
@@ -103,15 +100,15 @@
      - The `selectors' section is just `-ref' and `-length', included in the base library.
      - The `predicates' section is a bit different.
   |#
-  (include/resolve ("srfi" "%3a160" "meta") "predicates.scm")
-  (include/resolve ("srfi" "%3a160" "meta") "constructors.scm")
-  (include/resolve ("srfi" "%3a160" "meta") "iteration.scm")
-  (include/resolve ("srfi" "%3a160" "meta") "searching.scm")
-  (include/resolve ("srfi" "%3a160" "meta") "mutators.scm")
-  (include/resolve ("srfi" "%3a160" "meta") "conversion.scm")
-  (include/resolve ("srfi" "%3a160" "meta") "comparators.scm")
-  (include/resolve ("srfi" "%3a160" "meta") "generators.scm")
-  (include/resolve ("srfi" "%3a160" "meta") "output.scm")
+  (include "meta/predicates.scm")
+  (include "meta/constructors.scm")
+  (include "meta/iteration.scm")
+  (include "meta/searching.scm")
+  (include "meta/mutators.scm")
+  (include "meta/conversion.scm")
+  (include "meta/comparators.scm")
+  (include "meta/generators.scm")
+  (include "meta/output.scm")
 
   (define-syntax (define-meta-all stx)
     (syntax-case stx ()
@@ -165,8 +162,8 @@
 	       (map emit-ident '(take-while take-while-right drop-while drop-while-right
 			    index index-right skip skip-right any every partition filter remove))]
 	      #| predicates |#
-	      [(empty? =? <?)
-               (list (emit-ident 'empty?) (emit-ident #f #f #f '=) (emit-ident #f #f #f '<))]
+	      [(empty? =? #;<?)
+               (list (emit-ident 'empty?) (emit-ident #f #f #f '=) #;(emit-ident #f #f #f '<))]
               [(comp>? comp<?)
                (if (syntax->datum #'*real?*)
                    (list #'> #'<)
@@ -228,12 +225,12 @@
 	       (define-numeric-vector-take-while-right  take-while-right  *length* skip-right copy)
 	       (define-numeric-vector-drop-while        drop-while        *length* skip copy)
 	       (define-numeric-vector-drop-while-right  drop-while-right  *length* skip-right copy)
-	       (define-numeric-vector-empty?     empty?            *length*); actually a predicate
-	       (define-numeric-vector-any        any               fold empty?)
-	       (define-numeric-vector-every      every             fold empty?)
-	       (define-numeric-vector-partition  partition         *make* *subscript* *update!* *length* count)
-	       (define-numeric-vector-filter     filter            *make* *subscript* *update!* *length* count)
-	       (define-numeric-vector-remove     remove            filter)
+	       (define-numeric-vector-empty?            empty?            *length*); actually a predicate
+	       (define-numeric-vector-any               any               fold empty?)
+	       (define-numeric-vector-every             every             fold empty?)
+	       (define-numeric-vector-partition         partition         *make* *subscript* *update!* *length* count)
+	       (define-numeric-vector-filter            filter            *make* *subscript* *update!* *length* count)
+	       (define-numeric-vector-remove            remove            filter)
 
                #| predicates |#
 	       (define-numeric-vector=? =?    every  *length*)
@@ -250,7 +247,7 @@
 	       (define comparator (make-comparator *repr?* =? <? hash))
 
 	       #| generators |#
-	       (define-numeric-vector-make-generator         make-generator   *subscript* *length*)
+	       (define-numeric-vector-make-generator make-generator  *subscript* *length*)
 
                #| output |#
                (define-write-numeric-vector write-port))))]))

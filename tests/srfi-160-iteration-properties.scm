@@ -1,4 +1,4 @@
-;; SPDX-FileCopyrightText: 2018 D. Guthrie <dguthrie@posteo.net>
+;; SPDX-FileCopyrightText: 2026 D. Guthrie <dguthrie@posteo.net>
 ;;;
 ;;; SPDX-License-Identifier: MIT
 #!r6rs
@@ -9,7 +9,7 @@
   "Holds true if start is not non-negative"
   (apply op vec k rest)
   (irritants k)
-  (message "index ~a is not a non-negative integer"))
+  (message "index ~a is not a non-negative fixnum"))
 
 (define-test-property ((define-iter-overflow-property op) vec k . rest)
   "Holds true if end overflows vector"
@@ -47,7 +47,7 @@ It's feasible to use faster fixnum arithmetic here as the characters
   "Holds true if end overflows vector"
   (apply op vec k rest)
   (irritants k)
-  (message "segment ~a is not a non-negative integer"))
+  (message "segment ~a is not a non-negative fixnum"))
 
 #| map |#
 

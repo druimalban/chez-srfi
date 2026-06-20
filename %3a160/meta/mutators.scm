@@ -1,4 +1,4 @@
-;; SPDX-FileCopyrightText: 2018 D. Guthrie <dguthrie@posteo.net>
+;; SPDX-FileCopyrightText: 2026 D. Guthrie <dguthrie@posteo.net>
 ;;;
 ;;; SPDX-License-Identifier: MIT
 #!r6rs
@@ -16,10 +16,10 @@
   (assert-start<=end who start end)
   (assert-bounds who end (len vec) vec)
   (let loop ([i start] [seed ini])
-    (when (< i end)
+    (when (fx<? i end)
       (let-values ([(x next) (proc i seed)])
 	(upd! vec i x)
-	(loop (+ i 1) next)))))
+	(loop (fx+ i 1) next)))))
 
 (define/curried ((define-numeric-vector-unfold-right! len upd!) proc vec start end ini)
   "wrap SRFI 160 `@vector-unfold-right!' procedures"
@@ -27,11 +27,11 @@
   (assert-end-nat who end)
   (assert-start<=end who start end)
   (assert-bounds who end (len vec) vec)
-  (let loop ((i (- end 1)) (seed ini))
-    (when (>= i start)
-      (let-values (((x next) (proc i seed)))
+  (let loop ([i (fx- end 1)] [seed ini])
+    (when (fx>=? i start)
+      (let-values ([(x next) (proc i seed)])
 	(upd! vec i x)
-	(loop (- i 1) next)))))
+	(loop (fx- i 1) next)))))
 
 (define/curried-case (define-numeric-vector-fill! unfold! len valid? type-of)
   "wrap SRFI 160 `@vector-fill!' procedures"
@@ -71,10 +71,10 @@ Reversing with start 2 and end 2+N: at least two elements to reverse (changes)"
     (assert-end-nat who end)
     (assert-start<=end who start end)
     (assert-bounds who end (len vec) vec)
-    (let loop ([i start] [j (- end 1)])
-      (when (< i j)
+    (let loop ([i start] [j (fx- end 1)])
+      (when (fx<? i j)
 	(swap! vec i j)
-	(loop (+ i 1) (- j 1))))]))
+	(loop (fx+ i 1) (fx- j 1))))]))
 
 (define/curried-case (define-numeric-vector-copy! unfold! sub len)
   "wrap SRFI 160 `@vector-copy!' procedures"
@@ -88,18 +88,18 @@ Reversing with start 2 and end 2+N: at least two elements to reverse (changes)"
     (assert-start<=end who src-start src-end "source")
     (let ([src-length (len src)]
 	  [tgt-length (len tgt)])
-      (assert/who who (<= src-end src-length)
+      (assert/who who (fx<=? src-end src-length)
                   "source end ~a exceeds length of source ~a"
                   src-end src)
-      (assert/who who (<= tgt-start tgt-length)
+      (assert/who who (fx<=? tgt-start tgt-length)
                   "target start ~a exceeds length of target ~a"
                   tgt-start tgt)
-      (let ([adjusted-tgt-end (+ tgt-start (- src-end src-start))]
+      (let ([adjusted-tgt-end (fx+ tgt-start (fx- src-end src-start))]
 	    [unfold-with (lambda (tgt-i src-i)
-			   (values (sub src src-i) (+ src-i 1)))])
-        (assert/who who (<= adjusted-tgt-end tgt-length)
+			   (values (sub src src-i) (fx+ src-i 1)))])
+        (assert/who who (fx<=? adjusted-tgt-end tgt-length)
                     "slice source overruns target by ~a elements"
-                    (- adjusted-tgt-end tgt-length))
+                    (fx- adjusted-tgt-end tgt-length))
 	(unfold! unfold-with
 		 tgt
 		 tgt-start

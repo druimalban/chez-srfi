@@ -1,4 +1,4 @@
-;; SPDX-FileCopyrightText: 2018 D. Guthrie <dguthrie@posteo.net>
+;; SPDX-FileCopyrightText: 2026 D. Guthrie <dguthrie@posteo.net>
 ;;;
 ;;; SPDX-License-Identifier: MIT
 #!r6rs
@@ -52,7 +52,7 @@
   "Holds true if end is not non-negative"
   (op proc size ini)
   (irritants size)
-  (message "length ~a is not a non-negative integer"))
+  (message "length ~a is not a non-negative fixnum"))
 
 (define-test-property ((define-persistent-non-length-property op)
                          proc size ini)

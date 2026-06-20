@@ -5,7 +5,7 @@
 	  s32vector make-s32vector list->s32vector s32vector->list
 	  s32vector-length s32vector-ref s32vector-set!
           ;; predicates
-          s32vector-empty? s32vector= s32vector<
+          s32vector-empty? s32vector=
 
           ;; constructors
 	  s32vector-unfold s32vector-unfold-right

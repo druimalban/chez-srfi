@@ -1,4 +1,4 @@
-;; SPDX-FileCopyrightText: 2018 D. Guthrie <dguthrie@posteo.net>
+;; SPDX-FileCopyrightText: 2026 D. Guthrie <dguthrie@posteo.net>
 ;;;
 ;;; SPDX-License-Identifier: MIT
 #!r6rs
@@ -14,7 +14,7 @@
   (let ([size (len v)])
     (assert-index-nat who k)
     (assert-index-bounds who k size v)
-    (copy v (- size k) size)))
+    (copy v (fx- size k) size)))
 
 (define/curried ((define-numeric-vector-drop copy len) v k)
   "wrap SRFI 160 `@vector-drop' procedures"
@@ -28,27 +28,27 @@
   (let ([size (len v)])
     (assert-index-nat who k)
     (assert-index-bounds who k size v)
-    (copy v 0 (- (len v) k))))
+    (copy v 0 (fx- (len v) k))))
 
 #| Lifted verbatim from SRFI 160 reference. I have no idea
    how it's actually meant to work. |#
 (define/curried ((define-numeric-vector-segment copy len) v n)
   "wrap SRFI 160 `@vector-cumulate' procedures"
   (assert/who who
-    (nonnegative-integer? n)
-    "segment ~a is not a non-negative integer" n)
+    (nonnegative-fixnum? n)
+    "segment ~a is not a non-negative fixnum" n)
   (let loop ([acc '()] [i 0] [remain (len v)])
-    (if (<= remain 0)
+    (if (fx<=? remain 0)
 	(reverse acc)
-	(let ([size (min n remain)])
-          (loop (cons (copy v i (+ i size)) acc)
-		(+ i size)
-		(- remain size))))))
+	(let ([size (fxmin n remain)])
+          (loop (cons (copy v i (fx+ i size)) acc)
+		(fx+ i size)
+		(fx- remain size))))))
 
 (define/curried ((define-numeric-vector-fold sub len) proc id v . vs)
   "wrap SRFI 160 `@vector-fold' procedures"
   (let* ([vecs (cons v vs)]
-	 [width (apply compare-lengths len min vecs)])
+	 [width (apply compare-lengths len fxmin vecs)])
     (let loop ([i 0] [acc id])
       (if (fx=? i width)
 	  acc
@@ -60,7 +60,7 @@
 (define/curried ((define-numeric-vector-fold-right sub len) proc id v . vs)
   "wrap SRFI 160 `@vector-fold-right' procedures"
   (let* ([vecs (cons v vs)]
-	 [width (apply compare-lengths len min vecs)])
+	 [width (apply compare-lengths len fxmin vecs)])
     (let loop ([i (fx- width 1)] [acc id])
       (if (fx<? i 0)
 	  acc

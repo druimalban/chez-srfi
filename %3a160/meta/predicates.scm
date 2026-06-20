@@ -1,4 +1,4 @@
-;; SPDX-FileCopyrightText: 2018 D. Guthrie <dguthrie@posteo.net>
+;; SPDX-FileCopyrightText: 2026 D. Guthrie <dguthrie@posteo.net>
 ;;;
 ;;; SPDX-License-Identifier: MIT
 #!r6rs
@@ -9,21 +9,21 @@
 (define/curried ((define-numeric-vector=? every len) v . vs)
   "Wrap SRFI 160 `@vector=' procedures"
   (and (apply all-same-length? len v vs)
-       (apply every = v vs)))
+       (apply every fx=? v vs)))
 
 (define/curried ((define-numeric-vector<? <? >? sub len) vec1 vec2)
   "Convenience procedure for elementwise ordering, not part of the SRFI 160 specification"
   (let ([len1 (len vec1)]
         [len2 (len vec2)])
-    (cond [(<? len1 len2)
+    (cond [(fx<? len1 len2)
            #t]
-          [(>? len1 len2)
+          [(fx>? len1 len2)
            #f]
           [else
            (let loop ([k 0])
-             (cond [(= k len1)  #f]
+             (cond [(fx=? k len1)  #f]
                    [(<? (sub vec1 k) (sub vec2 k))  #t]
                    [(>? (sub vec1 k) (sub vec2 k))  #f]
                    [else
-                    (loop (+ k 1))]))])))
+                    (loop (fx+ k 1))]))])))
 

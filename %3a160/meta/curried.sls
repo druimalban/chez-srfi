@@ -1,4 +1,4 @@
-;; SPDX-FileCopyrightText: 2018 D. Guthrie <dguthrie@posteo.net>
+;; SPDX-FileCopyrightText: 2026 D. Guthrie <dguthrie@posteo.net>
 ;;;
 ;;; SPDX-License-Identifier: MIT
 #!r6rs
@@ -17,12 +17,13 @@
                 who-condition? condition-who
                 irritants-condition? condition-irritants
                 message-condition? condition-message)
+          (only (rnrs arithmetic fixnums (6)) fx=? fx<=? fx<? fx>=? fx>?)
           (only (rnrs control (6)) case-lambda when unless)
           (only (rnrs exceptions (6)) guard raise raise-continuable)
           (only (rnrs lists (6)) memq)
           (rnrs syntax-case (6))
 	  (srfi :28 basic-format-strings)
-          (only (srfi :160 meta utils) nonnegative-integer?))
+          (only (srfi :160 meta utils) nonnegative-fixnum?))
 
   (define raised-with?
     (case-lambda
@@ -197,55 +198,55 @@
      (case-lambda
       [(who start)
        (assert/who who
-                   (nonnegative-integer? start) "start ~a is not a non-negative integer"
+                   (nonnegative-fixnum? start) "start ~a is not a non-negative fixnum"
                    start)]
       [(who start prefix)
        (assert/who who
-                   (nonnegative-integer? start)
-                   (format "~a start ~~a is not a non-negative integer" prefix) start)]))
+                   (nonnegative-fixnum? start)
+                   (format "~a start ~~a is not a non-negative fixnum" prefix) start)]))
 
    (define assert-end-nat
      (case-lambda
       [(who end)
-       (assert/who who (nonnegative-integer? end) "end ~a is not a non-negative integer" end)]
+       (assert/who who (nonnegative-fixnum? end) "end ~a is not a non-negative fixnum" end)]
       [(who end prefix)
        (assert/who who
-                   (nonnegative-integer? end)
-                   (format "~a end ~~a is not a non-negative integer" prefix) end)]))
+                   (nonnegative-fixnum? end)
+                   (format "~a end ~~a is not a non-negative fixnum" prefix) end)]))
 
    (define assert-start<=end
      (case-lambda
       [(who start end)
-       (assert/who who (<= start end) "end ~a must be greater than or equal to start ~a" end start)]
+       (assert/who who (fx<=? start end) "end ~a must be greater than or equal to start ~a" end start)]
       [(who start end anno)
        (assert/who who
-                   (<= start end)
+                   (fx<=? start end)
                    (format "~a end ~~a must be greater than or equal to ~a start ~~a" anno anno)
                    end start)]))
 
    (define (assert-bounds who end width v)
-     (assert/who who (<= end width) "end ~a overflows ~a"
+     (assert/who who (fx<=? end width) "end ~a overflows ~a"
                  end v))
 
    (define assert-index-nat
      (case-lambda
       [(who k)
        (assert/who who
-                   (nonnegative-integer? k)
-                   "index ~a is not a non-negative integer"
+                   (nonnegative-fixnum? k)
+                   "index ~a is not a non-negative fixnum"
                    k)]
       [(who k prefix)
        (assert/who who
-                   (nonnegative-integer? k)
-                   (format "~a index ~~a is not a non-negative integer" prefix) k)]))
+                   (nonnegative-fixnum? k)
+                   (format "~a index ~~a is not a non-negative fixnum" prefix) k)]))
 
    (define assert-index-bounds
      (lambda (who k size v)
-       (assert/who who (>= size k) "index ~a overflows ~a"
+       (assert/who who (fx>=? size k) "index ~a overflows ~a"
                    k v)))
 
    (define (sub-append-triple who lst)
-     (if (and (list? lst) (= (length lst) 3))
+     (if (and (list? lst) (fx=? (length lst) 3))
          (apply values lst)
          (assert/who who #f
                      "expected triple of vector, start and end"

@@ -1,4 +1,4 @@
-;; SPDX-FileCopyrightText: 2018 D. Guthrie <dguthrie@posteo.net>
+;; SPDX-FileCopyrightText: 2026 D. Guthrie <dguthrie@posteo.net>
 ;;;
 ;;; SPDX-License-Identifier: MIT
 #!r6rs
@@ -57,7 +57,7 @@
   "define invalid `make-@vector' property (negative width)"
   (mk width rep)
   (irritants width)
-  (message "length ~a is not a non-negative integer"))
+  (message "length ~a is not a non-negative fixnum"))
 
 (define-test-property ((define-make/non-width-property mk) width rep)
   "define invalid `make-@vector' property (non-numeric width)"
@@ -85,13 +85,13 @@
   "define invalid `@vector->list' property (negative start)"
   (to-list vec start)
   (irritants start)
-  (message "start ~a is not a non-negative integer"))
+  (message "start ~a is not a non-negative fixnum"))
 
 (define-test-property ((define-to-list/neg-end-property to-list) vec start end)
   "define invalid `@vector->list' property (negative end)"
   (to-list vec start end)
   (irritants end)
-  (message "end ~a is not a non-negative integer"))
+  (message "end ~a is not a non-negative fixnum"))
 
 (define-test-property ((define-to-list/bounds-property to-list) vec start end)
   "define invalid `@vector->list' property (start is greater than end)"
@@ -111,7 +111,7 @@
   "define invalid index property"
   (apply op v k rest)
   (irritants k)
-  (message "index ~a is not a non-negative integer"))
+  (message "index ~a is not a non-negative fixnum"))
 
 (define-test-property ((define-sub+upd!/bounds-property op len) v k . rest)
   "define overflowing index property"

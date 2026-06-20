@@ -5,7 +5,7 @@
 	  c64vector make-c64vector list->c64vector c64vector->list
 	  c64vector-length c64vector-ref c64vector-set!
           ;; predicates
-          c64vector-empty? c64vector= c64vector<
+          c64vector-empty? c64vector=
 
           ;; constructors
 	  c64vector-unfold c64vector-unfold-right

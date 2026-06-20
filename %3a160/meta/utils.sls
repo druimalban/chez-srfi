@@ -1,4 +1,4 @@
-;; SPDX-FileCopyrightText: 2018 D. Guthrie <dguthrie@posteo.net>
+;; SPDX-FileCopyrightText: 2026 D. Guthrie <dguthrie@posteo.net>
 ;;;
 ;;; SPDX-License-Identifier: MIT
 #!r6rs
@@ -8,9 +8,9 @@
           compare-lengths all-same-length? total-length
 	  vectorised-subscript
           ;;
-          positive-integer?
-          negative-integer?
-          nonnegative-integer?
+          positive-fixnum?
+          negative-fixnum?
+          nonnegative-fixnum?
           exact?
           inexact?
           exact-integer?
@@ -21,6 +21,9 @@
   (import (rename (rnrs base (6))
                   (exact? r6rs:exact?)
                   (inexact? r6rs:inexact?))
+          (only (rnrs arithmetic fixnums (6))
+                fxpositive? fxnegative? fixnum?
+                fx=? fx>? fx<? fx+ fx-)
           (rnrs syntax-case (6))
           (only (rnrs lists (6)) memq)
           (only (srfi :1 lists) iota)
@@ -30,7 +33,7 @@
     (string->list "faeiohlmnrstvwxyzFAEIOHLMNRSTVWXYZ"))
 
   (define (one-of str)
-    (if (and (> (string-length str) 0)
+    (if (and (fx>? (string-length str) 0)
              (memq (string-ref str 0) like-vowels))
         "an"
         "a"))
@@ -53,7 +56,7 @@
     (apply compare-lengths
 	   len
 	   (lambda (prev curr)
-	     (and (= prev curr)
+	     (and (fx=? prev curr)
 		  curr))
 	   v vs))
 
@@ -64,17 +67,17 @@
     (map (lambda (v) (sub v i))
 	 vs))
 
-  (define (positive-integer? x)
-    (and (integer? x)
-         (positive? x)))
+  (define (positive-fixnum? x)
+    (and (fixnum? x)
+         (fxpositive? x)))
 
-  (define (negative-integer? x)
-    (and (integer? x)
-         (negative? x)))
+  (define (negative-fixnum? x)
+    (and (fixnum? x)
+         (fxnegative? x)))
 
-  (define (nonnegative-integer? x)
-    (and (integer? x)
-         (not (negative? x))))
+  (define (nonnegative-fixnum? x)
+    (and (fixnum? x)
+         (not (fxnegative? x))))
 
   (define (exact? x)
     (and (number? x) (r6rs:exact? x)))
@@ -112,9 +115,9 @@
 	[(_ body0 body ...) #'(lambda () body0 body ...)])))
 
   (define (make-range A B)
-    (if (or (not (integer? A)) (not (integer? B)) (< B A))
-	(error 'make-range "range must be from A to B where A <= B")
-	(iota (- B A) A)))
+    (if (or (not (fixnum? A)) (not (fixnum? B)) (fx<? B A))
+	(error 'make-range "range must be from fixnums A to B where A <= B")
+	(iota (fx- B A) A)))
 
   ;;;
   ); define library

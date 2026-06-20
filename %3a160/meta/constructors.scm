@@ -1,4 +1,4 @@
-;; SPDX-FileCopyrightText: 2018 D. Guthrie <dguthrie@posteo.net>
+;; SPDX-FileCopyrightText: 2026 D. Guthrie <dguthrie@posteo.net>
 ;;;
 ;;; SPDX-License-Identifier: MIT
 #!r6rs
@@ -19,7 +19,7 @@
           (assert-end-nat who end)
           (assert-start<=end who start end)
           (assert-bounds who end (len vec) vec)
-	  (let ([slots (mk (- end start))])
+	  (let ([slots (mk (fx- end start))])
 	    (copy! slots 0 vec start end)
 	    slots)]))
 
@@ -31,12 +31,12 @@
       v
       (let* ([vecs (cons v vs)]
 	     [lens (map len vecs)]
-	     [slots (mk (apply + lens))])
+	     [slots (mk (apply fx+ lens))])
 	(fold-left
 	 (lambda (last-extent curr-width curr-vec)
 	   ;; (@vector-copy! @to at @from [start [end]])
 	   (copy! slots last-extent curr-vec)
-	   (+ last-extent curr-width))
+	   (fx+ last-extent curr-width))
 	 0
 	 lens vecs)
 	slots)))
@@ -49,7 +49,7 @@
       (let*-values ([(vv start end)
                      (sub-append-triple who v)]
                     [(slots)
-                     (mk (- end start))])
+                     (mk (fx- end start))])
 	  (copy! slots 0 vv start end)
 	  slots)
       (let*-values ([(vecs lens starts ends total-len)
@@ -62,18 +62,18 @@
                            (let*-values ([(vv start end)
                                           (sub-append-triple (car to-process))]
                                          [(width)
-                                          (- end start)])
+                                          (fx- end start)])
 				(loop (cdr to-process)
 				      (cons vv vecs)
 				      (cons width lens)
 				      (cons start starts)
 				      (cons end ends)
-				      (+ width tally)))))]
+				      (fx+ width tally)))))]
 		    [(slots)
                      (mk total-len)])
 	(fold-left (lambda (l v start end last-extent)
 		     (copy! slots last-extent v start end)
-		     (+ last-extent l))
+		     (fx+ last-extent l))
 		   0
 		   lens vecs starts ends)
 	slots)))
@@ -85,5 +85,5 @@
       (unless (null? vecs)
         (let ([vec (car vecs)])
           (copy! v at vec 0 (len vec))
-          (loop (cdr vecs) (+ at (len vec)))))
+          (loop (cdr vecs) (fx+ at (len vec)))))
       v)))

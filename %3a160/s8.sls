@@ -5,7 +5,7 @@
 	  s8vector make-s8vector list->s8vector s8vector->list
 	  s8vector-length s8vector-ref s8vector-set!
           ;; predicates
-          s8vector-empty? s8vector= s8vector<
+          s8vector-empty? s8vector=
 
           ;; constructors
 	  s8vector-unfold s8vector-unfold-right

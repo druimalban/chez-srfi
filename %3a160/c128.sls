@@ -5,7 +5,7 @@
 	  c128vector make-c128vector list->c128vector c128vector->list
 	  c128vector-length c128vector-ref c128vector-set!
           ;; predicates
-          c128vector-empty? c128vector= c128vector<
+          c128vector-empty? c128vector=
 
           ;; constructors
 	  c128vector-unfold c128vector-unfold-right

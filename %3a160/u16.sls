@@ -5,7 +5,7 @@
 	  u16vector make-u16vector list->u16vector u16vector->list
 	  u16vector-length u16vector-ref u16vector-set!
           ;; predicates
-          u16vector-empty? u16vector= u16vector<
+          u16vector-empty? u16vector=
 
           ;; constructors
 	  u16vector-unfold u16vector-unfold-right

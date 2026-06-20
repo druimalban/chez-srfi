@@ -5,7 +5,7 @@
 	  s64vector make-s64vector list->s64vector s64vector->list
 	  s64vector-length s64vector-ref s64vector-set!
           ;; predicates
-          s64vector-empty? s64vector= s64vector<
+          s64vector-empty? s64vector=
 
           ;; constructors
 	  s64vector-unfold s64vector-unfold-right

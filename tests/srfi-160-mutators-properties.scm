@@ -1,4 +1,4 @@
-;; SPDX-FileCopyrightText: 2018 D. Guthrie <dguthrie@posteo.net>
+;; SPDX-FileCopyrightText: 2026 D. Guthrie <dguthrie@posteo.net>
 ;;;
 ;;; SPDX-License-Identifier: MIT
 #!r6rs
@@ -7,25 +7,25 @@
   "Holds true if start is not non-negative"
   (apply op vec start rest)
   (irritants start)
-  (message "start ~a is not a non-negative integer"))
+  (message "start ~a is not a non-negative fixnum"))
 
 (define-test-property ((define-neg-start-property/1 op) proc vec start . rest)
   "Holds true if start is not non-negative"
   (apply op proc vec start rest)
   (irritants start)
-  (message "start ~a is not a non-negative integer"))
+  (message "start ~a is not a non-negative fixnum"))
 
 (define-test-property ((define-neg-end-property op) vec start end . rest)
   "Holds true if end is not non-negative"
   (apply op vec start end rest)
   (irritants end)
-  (message "end ~a is not a non-negative integer"))
+  (message "end ~a is not a non-negative fixnum"))
 
 (define-test-property ((define-neg-end-property/1 op) proc vec start end . rest)
   "Holds true if end is not non-negative"
   (apply op proc vec start end rest)
   (irritants end)
-  (message "end ~a is not a non-negative integer"))
+  (message "end ~a is not a non-negative fixnum"))
 
 (define-test-property ((define-bounds-property op) vec start end . rest)
   "Holds true if start is greater than end"
@@ -58,13 +58,13 @@
   "Holds true if start is not non-negative"
   (op vec rep start end)
   (irritants start)
-  (message "start ~a is not a non-negative integer"))
+  (message "start ~a is not a non-negative fixnum"))
 
 (define-test-property ((define-fill!/neg-end-property op) vec rep start end)
   "Holds true if end is not non-negative"
   (op vec rep start end)
   (irritants end)
-  (message "end ~a is not a non-negative integer"))
+  (message "end ~a is not a non-negative fixnum"))
 
 (define-test-property ((define-fill!/bounds-property op) vec rep start end)
   "Holds true if start is greater than end"
@@ -103,13 +103,13 @@
   "define property to test invalid `@vector-swap!' index at position 1"
   (swap! v i j)
   (irritants i)
-  (message "index ~a is not a non-negative integer"))
+  (message "index ~a is not a non-negative fixnum"))
 
 (define-test-property ((define-swap!/non-pos2-property swap!) v i j)
   "define property to test invalid `@vector-swap!' index at position 2"
   (swap! v i j)
   (irritants j)
-  (message "index ~a is not a non-negative integer"))
+  (message "index ~a is not a non-negative fixnum"))
 
 #| in-place unfold! |#
 
@@ -250,24 +250,24 @@ Using this, it's possible to get the actual source end, and the actual target en
 
 (define-test-property ((define-copy!/neg-tgt-start-property copy!)
                          tgt tgt-start src src-start src-end)
-  "Holds true if target start is not a non-negative integer"
+  "Holds true if target start is not a non-negative fixnum"
   (copy! tgt tgt-start src src-start src-end)
   (irritants tgt-start)
-  (message "target start ~a is not a non-negative integer"))
+  (message "target start ~a is not a non-negative fixnum"))
 
 (define-test-property ((define-copy!/neg-src-start-property copy!)
                          tgt tgt-start src src-start src-end)
-  "Holds true if source start is not a non-negative-integer"
+  "Holds true if source start is not a non-negative-fixnum"
   (copy! tgt tgt-start src src-start src-end)
   (irritants src-start)
-  (message "source start ~a is not a non-negative integer"))
+  (message "source start ~a is not a non-negative fixnum"))
 
 (define-test-property ((define-copy!/neg-src-end-property copy!)
                          tgt tgt-start src src-start src-end)
-  "Holds true if source end is not a non-negative integer"
+  "Holds true if source end is not a non-negative fixnum"
   (copy! tgt tgt-start src src-start src-end)
   (irritants src-end)
-  (message "source end ~a is not a non-negative integer"))
+  (message "source end ~a is not a non-negative fixnum"))
 
 (define-test-property ((define-copy!/tgt-start-property copy!)
                          tgt tgt-start src src-start src-end)

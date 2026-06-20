@@ -1,4 +1,4 @@
-;; SPDX-FileCopyrightText: 2018 D. Guthrie <dguthrie@posteo.net>
+;; SPDX-FileCopyrightText: 2026 D. Guthrie <dguthrie@posteo.net>
 ;;;
 ;;; SPDX-License-Identifier: MIT
 #!r6rs
@@ -12,9 +12,9 @@
           (assert-start<=end who start end)
           (assert-bounds who end (len v) v)
 	  (let loop ([i start] [acc '()])
-	    (if (= i end)
+	    (if (fx=? i end)
 	        acc
-	        (loop (+ i 1)
+	        (loop (fx+ i 1)
 		      (cons (sub v i) (sub v i)))))]))
 
 (define/curried ((define-numeric-vector-reverse-from-list mk upd!) xs)
@@ -22,11 +22,11 @@
   (if (list? xs)
       (let* ([width (length xs)]
 	     [slots (mk width)])
-        (let loop ([k (- width 1)] [acc xs])
+        (let loop ([k (fx- width 1)] [acc xs])
           (if (negative? k)
 	      slots
 	      (begin (upd! slots k (car acc))
-		     (loop (- k 1) (cdr acc)))))
+		     (loop (fx- k 1) (cdr acc)))))
 	slots)
       (assertion-violationf (quote who) "~a is not a proper list" xs)))
 
@@ -39,12 +39,12 @@
           (assert-end-nat who end)
           (assert-start<=end who start end)
           (let* ([source-size (len v)]
-                 [target-size (- end start)]
+                 [target-size (fx- end start)]
                  [slots (mk target-size)])
             (assert-bounds who end source-size v)
             (let loop ([k start] [tgt 0])
-              (if (= k end)
+              (if (fx=? k end)
                   slots
                   (begin
                     (upd! slots tgt (sub v k))
-                    (loop (+ k 1) (+ tgt 1))))))]))
+                    (loop (fx+ k 1) (fx+ tgt 1))))))]))
