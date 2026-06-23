@@ -565,7 +565,7 @@
 
                (define/who (=? v . vs)
                  (and (apply all-same-length? *length* v vs)
-                      (apply every fx=? v vs))
+                      (apply every = v vs))
                  (reraise *length* every))
 
                (define (<? vec1 vec2)
